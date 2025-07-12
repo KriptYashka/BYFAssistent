@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+from src.db.repository.base import Base, CRUDMixin
 
 
-class User(Base):
+class User(Base, CRUDMixin):
     __tablename__ = 'users'
     tg_id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(64), nullable=True)
