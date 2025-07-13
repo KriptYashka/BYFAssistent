@@ -2,7 +2,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from repository.tables.base import Base, CRUDMixin
-
+from repository.tables.dance_style import DanceStyle
+from repository.tables.teacher import Teacher
+from repository.tables.timeslot import Timeslot
 
 class Lesson(Base, CRUDMixin):
     __tablename__ = 'lessons'

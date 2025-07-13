@@ -5,6 +5,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM
 from repository.tables.base import Base
 
+from repository.tables.hall import Hall
+from repository.tables.lesson import Lesson
+
 
 class Week(enum.Enum):
     MONDAY = "Понедельник"

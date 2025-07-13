@@ -1,49 +1,51 @@
-import logging
 from typing import Optional
 
-from sqlalchemy.exc import IntegrityError
+from repository.base import TableDB
+from src.db.repository.tables.teacher import Teacher
 
-from src.db.session import SessionDB
-from src.db.repository.tables.user import User
-
-
-def create_teacher(name, description=None, photo_url=None):
+def prepare_data(name, description, photo_url):
     data = {
         "name": name,
         "description": description,
         "photo_url": photo_url
     }
-    with SessionDB().get_session() as session:
-        try:
-            user = User.create(session, **data)
-        except IntegrityError as e:
-            logging.error(e)
-            return None
-        return user
+    for key in data:
+        if data[key] is None:
+            del data[key]
+    return data
 
-def get_user(tg_id) -> Optional[User]:
-    with SessionDB().get_session() as session:
-        user = User.get(session, tg_id)
-        return user
+def create_teacher(name, description=None, photo_url=None):
+    data = prepare_data(name, description, photo_url)
+    return TableDB(Teacher).create(**data)
 
-def get_all_users():
-    with SessionDB().get_session() as session:
-        user = User.get_all(session)
-        return user
+def get_teacher(pk) -> Optional[Teacher]:
+    return TableDB(Teacher).get(pk)
 
-def update_user(tg_id, name, phone):
-    with SessionDB().get_session() as session:
-        if not (user := get_user(tg_id)):
-            return None
-        data = {
-            "name": name,
-            "phone": phone,
-        }
-        updated_user = user.update(session, **data)
-        return updated_user
+def get_all_teachers():
+    return TableDB(Teacher).get_all()
 
-def delete_user(tg_id):
-    with SessionDB().get_session() as session:
-        user = get_user(tg_id)
-        if user:
-            user.delete(session)
+def is_exist(tg_id):
+    return get_teacher(tg_id) is not None
+
+def update_teacher_name(pk, name):
+    data = {"name": name}
+    updated_obj = TableDB(Teacher).update(pk, **data)
+    return updated_obj
+
+def update_teacher_description(pk, description):
+    data = {"description": description}
+    updated_obj = TableDB(Teacher).update(pk, **data)
+    return updated_obj
+
+def update_teacher_photo_url(pk, photo_url):
+    data = {"photo_url": photo_url}
+    updated_obj = TableDB(Teacher).update(pk, **data)
+    return updated_obj
+
+def update_teacher(pk, name=None, description=None, photo_url=None):
+    data = prepare_data(name, description, photo_url)
+    updated_obj = TableDB(Teacher).update(pk, **data)
+    return updated_obj
+
+def delete_teacher(tg_id):
+    TableDB(Teacher).delete(tg_id)

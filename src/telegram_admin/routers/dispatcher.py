@@ -1,8 +1,8 @@
 from aiogram import Dispatcher
 
-from routers.register import router as r_register
+from routers.manage import router as r_manage
 
 def create_dispatcher():
     dp = Dispatcher()
-    dp.include_router(r_register)
+    dp.include_router(r_manage)
     return dp

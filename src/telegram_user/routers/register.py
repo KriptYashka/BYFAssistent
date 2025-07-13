@@ -1,10 +1,11 @@
 from aiogram import Router, F
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 import re
 
+from keyboards.common import phone_kb
 from repository.users import create_user, update_user, is_exist
 
 router = Router()
@@ -12,12 +13,6 @@ router = Router()
 class Registration(StatesGroup):
     name = State()
     phone = State()
-
-phone_kb = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="Отправить номер", request_contact=True)]],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
 
 @router.message(Command("register"))
 async def start_registration(message: Message, state: FSMContext):
