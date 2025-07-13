@@ -4,15 +4,15 @@ from sqlalchemy import create_engine
 from repository.tables.base import Base
 
 # Необходимо импортировать используемые модели
-from src.db.repository.tables.dance_style import DanceStyle
-from src.db.repository.tables.hall import Hall
-from src.db.repository.tables.lesson import Lesson
-from src.db.repository.tables.place import Place
-from src.db.repository.tables.price import Price
-from src.db.repository.tables.subscription_request import SubscriptionRequest
-from src.db.repository.tables.teacher import Teacher
-from src.db.repository.tables.timeslot import Timeslot
-from src.db.repository.tables.user import User
+from repository.tables.dance_style import DanceStyle
+from repository.tables.hall import Hall
+from repository.tables.lesson import Lesson
+from repository.tables.place import Place
+from repository.tables.price import Price
+from repository.tables.subscription_request import SubscriptionRequest
+from repository.tables.teacher import Teacher
+from repository.tables.timeslot import Timeslot
+from repository.tables.user import User
 
 def main():
     config = configparser.ConfigParser()

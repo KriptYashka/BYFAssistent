@@ -1,0 +1,58 @@
+from aiogram import Router, F
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.filters import Command
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
+import re
+
+router = Router()
+
+class Registration(StatesGroup):
+    name = State()
+    phone = State()
+
+phone_kb = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text="Отправить номер", request_contact=True)]],
+    resize_keyboard=True,
+    one_time_keyboard=True
+)
+
+@router.message(Command("register"))
+async def start_registration(message: Message, state: FSMContext):
+    await message.answer("[Приветствие]. Введите ваше имя:")
+    await state.set_state(Registration.name)
+
+@router.message(Registration.name)
+async def get_name(message: Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    await message.answer(
+        "Пожалуйста, отправьте свой номер телефона, нажав кнопку ниже или введите номер:",
+        reply_markup=phone_kb
+    )
+    await state.set_state(Registration.phone)
+
+@router.message(Registration.phone, F.contact)
+async def get_phone_contact(message: Message, state: FSMContext):
+    data = await state.get_data()
+    name = data.get("name")
+    phone = message.contact.phone_number
+
+    # await save_user_to_db(user_id=message.from_user.id, name=name, phone=phone)
+
+    await message.answer("Спасибо! Вы успешно зарегистрированы.", reply_markup=None)
+    await state.clear()
+
+@router.message(Registration.phone, F.text)
+async def get_phone_text(message: Message, state: FSMContext):
+    phone = message.text.strip()
+    if not re.match(r"^\+?\d{10,15}$", phone):
+        await message.answer("Пожалуйста, введите корректный номер телефона (от 10 до 15 цифр).")
+        return
+
+    data = await state.get_data()
+    name = data.get("name")
+
+    # await save_user_to_db(user_id=message.from_user.id, name=name, phone=phone)
+
+    await message.answer("Спасибо! Вы успешно зарегистрированы.", reply_markup=None)
+    await state.clear()
