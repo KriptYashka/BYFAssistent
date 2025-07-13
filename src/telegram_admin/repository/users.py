@@ -1,11 +1,10 @@
-import logging
 from typing import Optional
 
-from sqlalchemy.exc import IntegrityError
-
-from src.db.session import SessionDB
+from repository.base import TableDB
 from src.db.repository.tables.user import User
 
+def is_exist(tg_id):
+    return get_user(tg_id) is not None
 
 def create_user(tg_id, name, phone):
     data = {
@@ -13,37 +12,21 @@ def create_user(tg_id, name, phone):
         "name": name,
         "phone": phone
     }
-    with SessionDB().get_session() as session:
-        try:
-            user = User.create(session, **data)
-        except IntegrityError as e:
-            logging.error(e)
-            return None
-        return user
+    return TableDB(User).create(**data)
 
 def get_user(tg_id) -> Optional[User]:
-    with SessionDB().get_session() as session:
-        user = User.get(session, tg_id)
-        return user
+    return TableDB(User).get(tg_id)
 
 def get_all_users():
-    with SessionDB().get_session() as session:
-        user = User.get_all(session)
-        return user
+    return TableDB(User).get_all()
 
 def update_user(tg_id, name, phone):
-    with SessionDB().get_session() as session:
-        if not (user := get_user(tg_id)):
-            return None
-        data = {
-            "name": name,
-            "phone": phone,
-        }
-        updated_user = user.update(session, **data)
-        return updated_user
+    data = {
+        "name": name,
+        "phone": phone,
+    }
+    updated_user = TableDB(User).update(tg_id, **data)
+    return updated_user
 
 def delete_user(tg_id):
-    with SessionDB().get_session() as session:
-        user = get_user(tg_id)
-        if user:
-            user.delete(session)
+    TableDB(User).delete(tg_id)

@@ -23,6 +23,7 @@ class CRUDMixin:
     def update(self, session: Session, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
+        session.add(self)
         session.commit()
         return self
 

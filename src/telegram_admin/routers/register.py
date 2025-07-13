@@ -5,7 +5,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 import re
 
-from repository.users import create_user
+from repository.users import create_user, update_user, is_exist
 
 router = Router()
 
@@ -44,11 +44,12 @@ async def get_phone_contact(message: Message, state: FSMContext):
 
 async def create_and_answer(message, name, phone):
     tg_id = message.from_user.id
-    user = create_user(tg_id, name, phone)
-    if user:
+    if not is_exist(tg_id):
+        user = create_user(tg_id, name, phone)
         text = f"Спасибо, {name}! Вы успешно зарегистрированы."
     else:
-        text = f"Возможно, вы уже были зарегистрированы."
+        user = update_user(tg_id, name, phone)
+        text = f"Данные обновлены."
     await message.answer(text, reply_markup=None)
 
 
