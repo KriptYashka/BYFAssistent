@@ -5,6 +5,8 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 import re
 
+from repository.users import create_user
+
 router = Router()
 
 class Registration(StatesGroup):
@@ -33,14 +35,22 @@ async def get_name(message: Message, state: FSMContext):
 
 @router.message(Registration.phone, F.contact)
 async def get_phone_contact(message: Message, state: FSMContext):
+    phone = message.contact.phone_number
     data = await state.get_data()
     name = data.get("name")
-    phone = message.contact.phone_number
 
-    # await save_user_to_db(user_id=message.from_user.id, name=name, phone=phone)
-
-    await message.answer("Спасибо! Вы успешно зарегистрированы.", reply_markup=None)
+    await create_and_answer(message, name, phone)
     await state.clear()
+
+async def create_and_answer(message, name, phone):
+    tg_id = message.from_user.id
+    user = create_user(tg_id, name, phone)
+    if user:
+        text = f"Спасибо, {name}! Вы успешно зарегистрированы."
+    else:
+        text = f"Возможно, вы уже были зарегистрированы."
+    await message.answer(text, reply_markup=None)
+
 
 @router.message(Registration.phone, F.text)
 async def get_phone_text(message: Message, state: FSMContext):
@@ -52,7 +62,6 @@ async def get_phone_text(message: Message, state: FSMContext):
     data = await state.get_data()
     name = data.get("name")
 
-    # await save_user_to_db(user_id=message.from_user.id, name=name, phone=phone)
-
-    await message.answer("Спасибо! Вы успешно зарегистрированы.", reply_markup=None)
+    await create_and_answer(message, name, phone)
     await state.clear()
+
