@@ -24,6 +24,3 @@ class Price(Base, CRUDMixin):
     is_preferential = Column(Boolean, default=False)
     price = Column(Integer)
 
-
-    def __repr__(self):
-        return f""

@@ -22,7 +22,3 @@ class SubscriptionRequest(Base, CRUDMixin):
         ENUM(StatusRequest, name="sub_request_status_enum", create_type=True),
         default=StatusRequest.CONSIDERATION)
     response_message = Column(String(1000), nullable=True)
-
-
-    def __repr__(self):
-        return f""
