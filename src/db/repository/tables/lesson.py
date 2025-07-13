@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from src.db.repository.base import Base, CRUDMixin
+from repository.tables.base import Base, CRUDMixin
 
 
 class Lesson(Base, CRUDMixin):

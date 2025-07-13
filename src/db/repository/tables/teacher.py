@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from src.db.repository.base import Base, CRUDMixin
+from repository.tables.base import Base, CRUDMixin
 
 class Teacher(Base, CRUDMixin):
     __tablename__ = 'teachers'

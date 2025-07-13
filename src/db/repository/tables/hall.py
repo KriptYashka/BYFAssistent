@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 
-from src.db.repository.base import Base, CRUDMixin
+from repository.tables.base import Base, CRUDMixin
 
 
 class Hall(Base, CRUDMixin):

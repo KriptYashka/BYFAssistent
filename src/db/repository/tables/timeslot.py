@@ -1,12 +1,10 @@
 import enum
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Time
+from sqlalchemy import Column, Integer, ForeignKey, Time
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import ENUM as PgEnum
-from src.db.repository.base import Base
+from sqlalchemy.dialects.postgresql import ENUM
+from repository.tables.base import Base
 
-from src.db.repository.lesson import Lesson
-from src.db.repository.hall import Hall
 
 class Week(enum.Enum):
     MONDAY = "Понедельник"
@@ -23,7 +21,7 @@ class Timeslot(Base):
     id = Column(Integer, primary_key=True)
     start = Column(Time, nullable=False)
     end = Column(Time, nullable=False)
-    week = Column(PgEnum(Week, name="week_enum", create_type=True), nullable=False)
+    week = Column(ENUM(Week, name="week_enum", create_type=True), nullable=False)
     hall_id = Column(Integer, ForeignKey('halls.id'), nullable=True)
     lesson_id = Column(Integer, ForeignKey('lessons.id'), nullable=False)
 
