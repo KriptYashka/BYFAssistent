@@ -1,79 +1,19 @@
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardButton
-from aiogram.filters import Command, Filter
-from aiogram.fsm.state import State, StatesGroup
+from aiogram import Router
+from aiogram.types import Message
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
+from filters.common import TextEqualsFilter
 from handlers.teachers import create_teacher
+from keyboards.common import main_menu_kb, management_menu_kb, misc_menu_kb, teachers_menu_kb, cancel_kb
+from misc.states import AddTeacher
 
 router = Router()
 
-# --- FSM для добавления преподавателя ---
-class AddTeacher(StatesGroup):
-    waiting_for_name = State()
-    waiting_for_description = State()
-    waiting_for_photo_url = State()
-
-# --- Клавиатуры ---
-main_menu_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="Заявки"), KeyboardButton(text="Управление")]
-    ],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-
-management_menu_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="Группы"), KeyboardButton(text="Расписание")],
-        [KeyboardButton(text="Прочее")]
-    ],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-
-misc_menu_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="Преподаватели"), KeyboardButton(text="Студии")],
-        [KeyboardButton(text="Залы")],
-        [KeyboardButton(text="Назад")]
-    ],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-
-teachers_menu_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="Добавить"), KeyboardButton(text="Редактировать")],
-        [KeyboardButton(text="Назад")]
-    ],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-
-cancel_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="Пропустить")],
-        [KeyboardButton(text="Отмена")],
-    ],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-
-# --- Хендлеры ---
-
-
-class TextEqualsFilter(Filter):
-    def __init__(self, text: str):
-        self.text = text.lower()
-
-    async def __call__(self, message: Message) -> bool:
-        return message.text and message.text.lower() == self.text
 
 @router.message(Command("start"))
 async def cmd_start(message: Message):
     await message.answer("Выберите действие:", reply_markup=main_menu_kb)
-
 
 @router.message(TextEqualsFilter("Управление"))
 async def management_menu(message: Message):
