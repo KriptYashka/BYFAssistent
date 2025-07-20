@@ -8,7 +8,7 @@ from handlers.teachers import get_all_teachers, update_teacher, delete_teacher
 from keyboards.common import cancel_kb
 from keyboards.teacher import teacher_edit_inline_kb
 from misc.common import TeacherEditCallback as Callback
-from misc.states import TeacherEditStates as States
+from misc.states import TeacherEditStates as States, MenuStates
 from utils.image import get_image_placeholder
 
 router = Router()
@@ -26,8 +26,7 @@ async def cancel_any_state(message: Message, state: FSMContext):
     """
     index, _ = await get_state_data(state)
     await state.clear()
-    await show_teacher_edit_start(message, state, current_index=index)
-
+    await edit_teacher_start(message, state, current_index=index)
 
 @router.callback_query(F.data == Callback.PREV)
 async def on_prev_teacher(call: CallbackQuery, state: FSMContext):
@@ -39,8 +38,7 @@ async def on_prev_teacher(call: CallbackQuery, state: FSMContext):
 
     index = (index - 1) % len(teachers)
     await state.update_data(current_index=index)
-    await send_teacher_edit(call, state)
-
+    await show_teacher(call, state)
 
 @router.callback_query(F.data == Callback.NEXT)
 async def on_next_teacher(call: CallbackQuery, state: FSMContext):
@@ -52,7 +50,7 @@ async def on_next_teacher(call: CallbackQuery, state: FSMContext):
 
     index = (index + 1) % len(teachers)
     await state.update_data(current_index=index)
-    await send_teacher_edit(call, state)
+    await show_teacher(call, state)
 
 @router.callback_query(F.data == Callback.EDIT_NAME)
 async def on_edit_name_teacher_callback(call: CallbackQuery, state: FSMContext):
@@ -73,7 +71,7 @@ async def on_edit_name_teacher_set_name(message: Message, state: FSMContext):
     update_teacher(pk, name=name)
 
     await state.clear()
-    await show_teacher_edit_start(message, state, current_index=index)
+    await edit_teacher_start(message, state, current_index=index)
 
 @router.callback_query(F.data == Callback.EDIT_DESC)
 async def on_edit_desc_teacher_callback(call: CallbackQuery, state: FSMContext):
@@ -94,7 +92,7 @@ async def on_edit_desc_teacher_set(message: Message, state: FSMContext):
     update_teacher(pk, description=description)
 
     await state.clear()
-    await show_teacher_edit_start(message, state, current_index=index)
+    await edit_teacher_start(message, state, current_index=index)
 
 @router.callback_query(F.data == Callback.EDIT_PHOTO)
 async def on_edit_photo_teacher_callback(call: CallbackQuery, state: FSMContext):
@@ -115,7 +113,7 @@ async def on_edit_photo_teacher_set(message: Message, state: FSMContext):
     update_teacher(pk, photo_url=photo_url)
 
     await state.clear()
-    await show_teacher_edit_start(message, state, current_index=index)
+    await edit_teacher_start(message, state, current_index=index)
 
 
 @router.callback_query(F.data == Callback.DELETE)
@@ -152,18 +150,18 @@ async def confirm_delete_teacher(message: Message, state: FSMContext):
         await state.update_data(teachers=teachers, current_index=index)
 
     await state.clear()
-    await show_teacher_edit_start(message, state, current_index=index)
+    await edit_teacher_start(message, state, current_index=index)
 
 
-@router.message(TextEqualsFilter("Редактировать"))
-async def show_teacher_edit_start(message: Message, state: FSMContext, current_index=0):
+@router.message(MenuStates.teacher, TextEqualsFilter("Редактировать"))
+async def edit_teacher_start(message: Message, state: FSMContext, current_index=0):
     teachers = get_all_teachers()
     if not teachers:
         await message.answer("Преподаватели не найдены.")
         return
 
     await state.update_data(teachers=teachers, current_index=current_index)
-    await send_teacher_edit(message, state)
+    await show_teacher(message, state)
 
 def get_teacher_caption(teacher):
     caption = f"**{teacher.name}**\n\n"
@@ -183,7 +181,7 @@ async def answer_message_with_media(message_or_call, caption, photo_url=None):
         await message_or_call.answer_photo(photo=photo_url, caption=caption, parse_mode="Markdown",
                                            reply_markup=teacher_edit_inline_kb)
 
-async def send_teacher_edit(message_or_call, state: FSMContext):
+async def show_teacher(message_or_call, state: FSMContext):
     data = await state.get_data()
     teachers = data.get("teachers", [])
     index = data.get("current_index", 0)

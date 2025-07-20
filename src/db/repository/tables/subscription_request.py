@@ -16,7 +16,7 @@ class StatusRequest(enum.Enum):
 class SubscriptionRequest(Base, CRUDMixin):
     __tablename__ = 'subscription_requests'
     id = Column(Integer, primary_key=True)
-    price_id = Column(Integer, ForeignKey('halls.id'))
+    price_id = Column(Integer, ForeignKey('prices.id'))
     user_id = Column(Integer, ForeignKey('users.tg_id'))
     status = Column(
         ENUM(StatusRequest, name="sub_request_status_enum", create_type=True),

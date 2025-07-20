@@ -24,9 +24,19 @@ misc_menu_kb = ReplyKeyboardMarkup(
     resize_keyboard=True,
     one_time_keyboard=True
 )
-teachers_menu_kb = ReplyKeyboardMarkup(
+
+add_or_edit_menu_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Добавить"), KeyboardButton(text="Редактировать")],
+        [KeyboardButton(text="Назад")]
+    ],
+    resize_keyboard=True,
+    one_time_keyboard=True
+)
+
+add_or_delete_menu_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Добавить"), KeyboardButton(text="Удалить")],
         [KeyboardButton(text="Назад")]
     ],
     resize_keyboard=True,
