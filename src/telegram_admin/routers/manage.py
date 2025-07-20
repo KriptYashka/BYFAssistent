@@ -4,7 +4,7 @@ from aiogram.filters import Command, Filter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
-from repository.teachers import create_teacher
+from handlers.teachers import create_teacher
 
 router = Router()
 

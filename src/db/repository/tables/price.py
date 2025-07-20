@@ -3,7 +3,7 @@ import enum
 from sqlalchemy import Column, Integer, Float, Boolean
 from sqlalchemy.dialects.postgresql import ENUM
 
-from repository.tables.base import Base, CRUDMixin
+from src.db.repository.tables.base import Base, CRUDMixin
 
 
 class SubscriptionType(enum.Enum):

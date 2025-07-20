@@ -1,7 +1,7 @@
 from typing import Optional
 
-from repository.base import TableDB
-from src.db.repository.tables.teacher import Teacher
+from handlers.base import TableDB
+from depends.tables import Teacher
 
 def prepare_data(name, description, photo_url):
     data = {
@@ -49,3 +49,9 @@ def update_teacher(pk, name=None, description=None, photo_url=None):
 
 def delete_teacher(tg_id):
     TableDB(Teacher).delete(tg_id)
+
+def main():
+    create_teacher("Egor", "No desc", "No URL")
+
+if __name__ == '__main__':
+    main()

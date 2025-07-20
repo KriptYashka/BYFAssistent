@@ -3,10 +3,7 @@ import enum
 from sqlalchemy import Column, Integer, ForeignKey, Time
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ENUM
-from repository.tables.base import Base
-
-from repository.tables.hall import Hall
-from repository.tables.lesson import Lesson
+from src.db.repository.tables.base import Base
 
 
 class Week(enum.Enum):
@@ -28,5 +25,5 @@ class Timeslot(Base):
     hall_id = Column(Integer, ForeignKey('halls.id'), nullable=True)
     lesson_id = Column(Integer, ForeignKey('lessons.id'), nullable=False)
 
-    hall = relationship("Hall", back_populates="timeslots")
-    lesson = relationship("Lesson", back_populates="timeslots")
+    # hall = relationship("Hall", back_populates="timeslots")
+    # lesson = relationship("Lesson", back_populates="timeslots")

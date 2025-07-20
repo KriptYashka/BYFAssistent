@@ -1,7 +1,7 @@
 from typing import Optional
 
-from repository.base import TableDB
-from src.db.repository.tables.user import User
+from handlers.base import TableDB
+from depends.tables import User
 
 def is_exist(tg_id):
     return get_user(tg_id) is not None

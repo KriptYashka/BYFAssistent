@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, BigInteger
 
-from repository.tables.base import Base, CRUDMixin
+from src.db.repository.tables.base import Base, CRUDMixin
 
 
 class User(Base, CRUDMixin):

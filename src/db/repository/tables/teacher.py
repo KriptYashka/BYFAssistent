@@ -1,7 +1,10 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from typing import List
 
-from repository.tables.base import Base, CRUDMixin
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship, Mapped
+
+from src.db.repository.tables.base import Base, CRUDMixin
+
 
 class Teacher(Base, CRUDMixin):
     __tablename__ = 'teachers'
@@ -10,4 +13,4 @@ class Teacher(Base, CRUDMixin):
     description = Column(String(1000))
     photo_url = Column(String, nullable=True)
 
-    lessons = relationship("Lesson", back_populates="teacher")
+    lessons = relationship("src.db.repository.tables.lesson.Lesson", back_populates="teacher")

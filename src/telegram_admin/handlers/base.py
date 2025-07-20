@@ -4,7 +4,7 @@ from typing import Optional
 
 from sqlalchemy.exc import IntegrityError
 
-from src.db.repository.tables.base import CRUDMixin
+from depends.tables import CRUDMixin
 from src.db.session import SessionDB
 
 class TableDB:

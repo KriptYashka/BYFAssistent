@@ -1,10 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from repository.tables.base import Base, CRUDMixin
-from repository.tables.dance_style import DanceStyle
-from repository.tables.teacher import Teacher
-from repository.tables.timeslot import Timeslot
+from src.db.repository.tables.base import Base, CRUDMixin
 
 class Lesson(Base, CRUDMixin):
     __tablename__ = 'lessons'
@@ -14,8 +11,8 @@ class Lesson(Base, CRUDMixin):
     dance_type_id = Column(Integer, ForeignKey('styles.id'), nullable=True)
     experience_type = Column(String(64))
 
-    teacher = relationship("Teacher", back_populates="lessons")
-    timeslots = relationship("Timeslot", back_populates="lesson", cascade="all, delete-orphan")
+    teacher = relationship("src.db.repository.tables.teacher.Teacher", back_populates="lessons")
+    # timeslots = relationship("src.db.repository.tables.timeslot.Timeslot", back_populates="lesson", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Lesson(id={self.id}, dance_type='{self.dance_type}', teacher_id={self.teacher_id})>"
