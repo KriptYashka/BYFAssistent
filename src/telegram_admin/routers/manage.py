@@ -5,7 +5,8 @@ from aiogram.fsm.context import FSMContext
 
 from filters.common import TextEqualsFilter
 from handlers.teachers import create_teacher
-from keyboards.common import main_menu_kb, management_menu_kb, misc_menu_kb, teachers_menu_kb, cancel_kb
+from keyboards.common import cancel_or_pass_kb
+from keyboards.navigate import main_menu_kb, management_menu_kb, misc_menu_kb, teachers_menu_kb
 from misc.states import AddTeacher
 
 router = Router()
@@ -29,7 +30,7 @@ async def teachers_menu(message: Message):
 
 @router.message(TextEqualsFilter("Добавить"))
 async def add_teacher_start(message: Message, state: FSMContext):
-    await message.answer("Введите имя преподавателя или нажмите Отмена:", reply_markup=cancel_kb)
+    await message.answer("Введите имя преподавателя или нажмите Отмена:", reply_markup=cancel_or_pass_kb)
     await state.set_state(AddTeacher.waiting_for_name)
 
 @router.message(AddTeacher.waiting_for_name)
@@ -40,7 +41,7 @@ async def add_teacher_name(message: Message, state: FSMContext):
         return
 
     await state.update_data(name=message.text)
-    await message.answer("Введите описание преподавателя (можно пропустить):", reply_markup=cancel_kb)
+    await message.answer("Введите описание преподавателя (можно пропустить):", reply_markup=cancel_or_pass_kb)
     await state.set_state(AddTeacher.waiting_for_description)
 
 @router.message(AddTeacher.waiting_for_description)
@@ -54,7 +55,7 @@ async def add_teacher_description(message: Message, state: FSMContext):
 
     description = message.text if message.text.strip() else None
     await state.update_data(description=description)
-    await message.answer("Введите ссылку на фото преподавателя (можно пропустить):", reply_markup=cancel_kb)
+    await message.answer("Введите ссылку на фото преподавателя (можно пропустить):", reply_markup=cancel_or_pass_kb)
     await state.set_state(AddTeacher.waiting_for_photo_url)
 
 @router.message(AddTeacher.waiting_for_photo_url)

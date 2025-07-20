@@ -9,10 +9,11 @@ def prepare_data(name, description, photo_url):
         "description": description,
         "photo_url": photo_url
     }
+    changed_data = {}
     for key in data:
-        if data[key] is None:
-            del data[key]
-    return data
+        if data[key] is not None:
+            changed_data[key] = data[key]
+    return changed_data
 
 def create_teacher(name, description=None, photo_url=None):
     data = prepare_data(name, description, photo_url)
