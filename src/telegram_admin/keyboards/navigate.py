@@ -7,7 +7,7 @@ main_menu_kb = ReplyKeyboardMarkup(
     resize_keyboard=True,
     one_time_keyboard=True
 )
-management_menu_kb = ReplyKeyboardMarkup(
+manage_menu_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Группы"), KeyboardButton(text="Расписание")],
         [KeyboardButton(text="Прочее")]
@@ -15,7 +15,7 @@ management_menu_kb = ReplyKeyboardMarkup(
     resize_keyboard=True,
     one_time_keyboard=True
 )
-misc_menu_kb = ReplyKeyboardMarkup(
+manage_other_menu_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Преподаватели"), KeyboardButton(text="Студии")],
         [KeyboardButton(text="Залы")],

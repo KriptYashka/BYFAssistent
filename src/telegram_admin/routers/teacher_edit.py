@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from filters.common import TextEqualsFilter
 from handlers.teachers import get_all_teachers, update_teacher, delete_teacher
 from keyboards.common import cancel_kb
-from keyboards.teacher import teacher_edit_inline_kb
+from keyboards.editing import teacher_edit_inline_kb
 from misc.common import TeacherEditCallback as Callback
 from misc.states import TeacherEditStates as States, MenuStates
 from utils.image import get_image_placeholder
@@ -64,7 +64,7 @@ async def on_edit_name_teacher_callback(call: CallbackQuery, state: FSMContext):
     await call.message.answer("Введите новое имя", reply_markup=cancel_kb)
 
 @router.message(States.edit_name)
-async def on_edit_name_teacher_set_name(message: Message, state: FSMContext):
+async def on_edit_name_teacher_set(message: Message, state: FSMContext):
     index, teachers = await get_state_data(state)
     pk = teachers[index].id
     name = message.text
@@ -153,21 +153,6 @@ async def confirm_delete_teacher(message: Message, state: FSMContext):
     await edit_teacher_start(message, state, current_index=index)
 
 
-@router.message(MenuStates.teacher, TextEqualsFilter("Редактировать"))
-async def edit_teacher_start(message: Message, state: FSMContext, current_index=0):
-    teachers = get_all_teachers()
-    if not teachers:
-        await message.answer("Преподаватели не найдены.")
-        return
-
-    await state.update_data(teachers=teachers, current_index=current_index)
-    await show_teacher(message, state)
-
-def get_teacher_caption(teacher):
-    caption = f"**{teacher.name}**\n\n"
-    caption += teacher.description if teacher.description else "Описание отсутствует."
-    return caption
-
 async def answer_message_with_media(message_or_call, caption, photo_url=None):
     photo_url = photo_url or BufferedInputFile(get_image_placeholder(), "Неизвестно")
 
@@ -181,11 +166,13 @@ async def answer_message_with_media(message_or_call, caption, photo_url=None):
         await message_or_call.answer_photo(photo=photo_url, caption=caption, parse_mode="Markdown",
                                            reply_markup=teacher_edit_inline_kb)
 
-async def show_teacher(message_or_call, state: FSMContext):
-    data = await state.get_data()
-    teachers = data.get("teachers", [])
-    index = data.get("current_index", 0)
+def get_teacher_caption(teacher):
+    caption = f"**{teacher.name}**\n\n"
+    caption += teacher.description if teacher.description else "Описание отсутствует."
+    return caption
 
+async def show_teacher(message_or_call, state: FSMContext):
+    index, teachers = get_state_data(state)
     if not teachers:
         await message_or_call.answer("Преподаватели не найдены.")
         return
@@ -198,3 +185,13 @@ async def show_teacher(message_or_call, state: FSMContext):
         await answer_message_with_media(message_or_call, caption, photo_url)
     except TelegramBadRequest:
         await answer_message_with_media(message_or_call, caption)
+
+@router.message(MenuStates.teacher, TextEqualsFilter("Редактировать"))
+async def edit_teacher_start(message: Message, state: FSMContext, current_index=0):
+    teachers = get_all_teachers()
+    if not teachers:
+        await message.answer("Преподаватели не найдены.")
+        return
+
+    await state.update_data(teachers=teachers, current_index=current_index)
+    await show_teacher(message, state)

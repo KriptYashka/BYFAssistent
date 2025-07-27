@@ -4,7 +4,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from filters.common import TextEqualsFilter
-from keyboards.navigate import main_menu_kb, management_menu_kb, misc_menu_kb, add_or_edit_menu_kb, \
+from keyboards.navigate import main_menu_kb, manage_menu_kb, manage_other_menu_kb, add_or_edit_menu_kb, \
     add_or_delete_menu_kb
 from misc.states import MenuStates
 
@@ -27,11 +27,11 @@ async def back_to_previous_menu(message: Message, state: FSMContext):
 
 @router.message(TextEqualsFilter("Управление"))
 async def management_menu(message: Message):
-    await message.answer("Выберите раздел управления:", reply_markup=management_menu_kb)
+    await message.answer("Выберите раздел управления:", reply_markup=manage_menu_kb)
 
 @router.message(TextEqualsFilter("Прочее"))
 async def misc_menu(message: Message):
-    await message.answer("Выберите пункт:", reply_markup=misc_menu_kb)
+    await message.answer("Выберите пункт:", reply_markup=manage_other_menu_kb)
 
 @router.message(TextEqualsFilter("Преподаватели"))
 async def teachers_menu(message: Message, state: FSMContext):
